@@ -35,5 +35,6 @@ private:
 	int playerTwoScore;
 
 	bool startRally = true;
+	bool playerOneServes;
 	bool playerOneUpPress, playerOneDownPress, playerTwoUpPress, playerTwoDownPress;
 };

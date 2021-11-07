@@ -8,7 +8,8 @@ void ofApp::setup() {
 	ofSetRectMode(OF_RECTMODE_CENTER);
 	p1PaddleYPosition = 250;
 	p2PaddleYPosition = 250;
-
+	ofSetFrameRate(50);
+	playerOneServes = ofRandom(0, 100) > 50; 
 }
 
 //--------------------------------------------------------------
@@ -23,20 +24,15 @@ void ofApp::update() {
 		p1PaddleYPosition = ofGetHeight() / 2.0f;
 		p2PaddleYPosition = ofGetHeight() / 2.0f;
 
-		if (ofRandom(0, 100) > 50) {
-			ballXSpeed = -5;
-		} else {
-			ballXSpeed = 5;
-		}
-
-		std::vector<float> startSpeeds{-2.0f, -1.5f, -1.0f, 1.0f, 1.5f, 2.0f};
+		std::vector<float> startSpeeds{-120.0f, -110.f, -100.0f, 100.0f, 110.0f, 120.0f};
 		ofRandomize(startSpeeds);
 
 		ballYSpeed = startSpeeds[0];
+		ballXSpeed = playerOneServes ? 300 : -300;
 	}
 
 	// MOVE PADDLES
-	float speedChange{10};
+	double speedChange{500 * ofGetLastFrameTime()};
 	if (playerOneUpPress) {
 		if (p1PaddleYPosition <= 50) {
 			p1PaddleYPosition = 50;
@@ -69,7 +65,6 @@ void ofApp::update() {
 		}
 	}
 
-
 	// BALL EDGE BOUNCE
 	if (ballYPosition <= 5) {
 		ballYPosition = 5;
@@ -82,37 +77,46 @@ void ofApp::update() {
 	// BALL PADDLE BOUNCE
 	if (ballXPosition >= 50 && ballXPosition <= 60) {
 		if (ballYPosition > p1PaddleYPosition - 50 && ballYPosition < p1PaddleYPosition + 50) {
+			// Reverse the X speed direction.
 			ballXSpeed *= -1;
+			// Increase / Decrease Y speed depending on where we hit on paddle.
+			ballYSpeed += ballYPosition - p1PaddleYPosition;
+			// Push ball away from paddle on hit. 
 			ballXPosition = 61;
 		}
 	}
 
 	if (ballXPosition <= 750 && ballXPosition >= 740) {
 		if (ballYPosition > p2PaddleYPosition - 50 && ballYPosition < p2PaddleYPosition + 50) {
+			// Reverse the X speed direction.
 			ballXSpeed *= -1;
+			// Increase / Decrease Y speed depending on where we hit on paddle.
+			ballYSpeed += ballYPosition - p2PaddleYPosition;
+			// Push ball away from paddle on hit. 
 			ballXPosition = 739;
 		}
 	}
 
 	// MOVE BALL
-	ballXPosition += ballXSpeed;
-	ballYPosition += ballYSpeed;
+	ballXPosition += ballXSpeed * ofGetLastFrameTime();
+	ballYPosition += ballYSpeed* ofGetLastFrameTime();
 
 	// CHECK FOR WIN
 	if (ballXPosition < 0) {
 		++playerTwoScore;
 		startRally = true;
+		playerOneServes = false;
 	}
 
 	if (ballXPosition > 800) {
 		++playerOneScore;
 		startRally = true;
+		playerOneServes = true;
 	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-
 	ofDrawBitmapString("P1: " + std::to_string(playerOneScore), 200, 40);
 	ofDrawBitmapString("P2: " + std::to_string(playerTwoScore), 550, 40);
 
