@@ -43,12 +43,9 @@ void ofApp::update() {
 	p2PaddleYPosition = ofClamp(p2PaddleYPosition, 50, 450);
 
 	// BALL EDGE BOUNCE
-	if (ballYPosition <= 5) {
-		ballYPosition = 5;
+	if (ballYPosition <= 5 || ballYPosition >= 495) {
 		ballYSpeed *= -1;
-	} else if (ballYPosition >= 495) {
-		ballYPosition = 495;
-		ballYSpeed *= -1;
+        ballYPosition = ofClamp(ballYPosition, 5, 495);
 	}
 
 	// PLAYER ONE BALL PADDLE BOUNCE
