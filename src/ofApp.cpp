@@ -32,7 +32,7 @@ void ofApp::update() {
 	}
 
 	// MOVE PADDLES
-	double speedChange{500 * ofGetLastFrameTime()};
+	const double speedChange{300 * ofGetLastFrameTime()};
 
 	if (playerOneUpPress) p1PaddleYPosition -= speedChange;
 	if (playerOneDownPress) p1PaddleYPosition += speedChange;
@@ -56,19 +56,19 @@ void ofApp::update() {
 		ballXSpeed *= -1;
 		// Increase / Decrease Y speed depending on where we hit on paddle.
 		ballYSpeed += ballYPosition - p1PaddleYPosition;
-		// Push ball away from paddle on hit. 
+		// Push ball away from paddle on hit to the right.
 		ballXPosition = 65;
 	}
 
 	// PLAYER TWO BALL PADDLE BOUNCE
-	if ((ballXPosition < 750 && ballXPosition > 735)
+	if ((ballXPosition > 735 && ballXPosition < 750) 
 		&& (ballYPosition > p2PaddleYPosition - 50)
 		&& (ballYPosition < p2PaddleYPosition + 50)) {
 		// Reverse the X speed direction.
 		ballXSpeed *= -1;
 		// Increase / Decrease Y speed depending on where we hit on paddle.
 		ballYSpeed += ballYPosition - p2PaddleYPosition;
-		// Push ball away from paddle on hit. 
+		// Push ball away from paddle on hit to the left.
 		ballXPosition = 735;
 	}
 
