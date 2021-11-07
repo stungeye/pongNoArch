@@ -8,7 +8,7 @@ void ofApp::setup() {
 	ofSetRectMode(OF_RECTMODE_CENTER);
 	p1PaddleYPosition = 250;
 	p2PaddleYPosition = 250;
-	ofSetFrameRate(50);
+	ofSetFrameRate(100);
 	playerOneServes = ofRandom(0, 100) > 50; 
 }
 
@@ -33,37 +33,14 @@ void ofApp::update() {
 
 	// MOVE PADDLES
 	double speedChange{500 * ofGetLastFrameTime()};
-	if (playerOneUpPress) {
-		if (p1PaddleYPosition <= 50) {
-			p1PaddleYPosition = 50;
-		} else {
-			p1PaddleYPosition -= speedChange;
-		}
-	}
 
-	if (playerOneDownPress) {
-		if (p1PaddleYPosition >= 450) {
-			p1PaddleYPosition = 450;
-		} else {
-			p1PaddleYPosition += speedChange;
-		}
-	}
+	if (playerOneUpPress) p1PaddleYPosition -= speedChange;
+	if (playerOneDownPress) p1PaddleYPosition += speedChange;
+	if (playerTwoUpPress) p2PaddleYPosition -= speedChange;
+	if (playerTwoDownPress) p2PaddleYPosition += speedChange;
 
-	if (playerTwoUpPress) {
-		if (p2PaddleYPosition <= 50) {
-			p2PaddleYPosition = 50;
-		} else {
-			p2PaddleYPosition -= speedChange;
-		}
-	}
-
-	if (playerTwoDownPress) {
-		if (p2PaddleYPosition >= 450) {
-			p2PaddleYPosition = 450;
-		} else {
-			p2PaddleYPosition += speedChange;
-		}
-	}
+	p1PaddleYPosition = ofClamp(p1PaddleYPosition, 50, 450);
+	p2PaddleYPosition = ofClamp(p2PaddleYPosition, 50, 450);
 
 	// BALL EDGE BOUNCE
 	if (ballYPosition <= 5) {
@@ -74,32 +51,33 @@ void ofApp::update() {
 		ballYSpeed *= -1;
 	}
 
-	// BALL PADDLE BOUNCE
-	if (ballXPosition >= 50 && ballXPosition <= 60) {
+	// PLAYER ONE BALL PADDLE BOUNCE
+	if (ballXPosition > 50 && ballXPosition < 65) {
 		if (ballYPosition > p1PaddleYPosition - 50 && ballYPosition < p1PaddleYPosition + 50) {
 			// Reverse the X speed direction.
 			ballXSpeed *= -1;
 			// Increase / Decrease Y speed depending on where we hit on paddle.
 			ballYSpeed += ballYPosition - p1PaddleYPosition;
 			// Push ball away from paddle on hit. 
-			ballXPosition = 61;
+			ballXPosition = 65;
 		}
 	}
 
-	if (ballXPosition <= 750 && ballXPosition >= 740) {
+	// PLAYER TWO BALL PADDLE BOUNCE
+	if (ballXPosition < 750 && ballXPosition > 735) {
 		if (ballYPosition > p2PaddleYPosition - 50 && ballYPosition < p2PaddleYPosition + 50) {
 			// Reverse the X speed direction.
 			ballXSpeed *= -1;
 			// Increase / Decrease Y speed depending on where we hit on paddle.
 			ballYSpeed += ballYPosition - p2PaddleYPosition;
 			// Push ball away from paddle on hit. 
-			ballXPosition = 739;
+			ballXPosition = 735;
 		}
 	}
 
 	// MOVE BALL
 	ballXPosition += ballXSpeed * ofGetLastFrameTime();
-	ballYPosition += ballYSpeed* ofGetLastFrameTime();
+	ballYPosition += ballYSpeed * ofGetLastFrameTime();
 
 	// CHECK FOR WIN
 	if (ballXPosition < 0) {
