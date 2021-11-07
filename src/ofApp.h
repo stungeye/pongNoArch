@@ -22,19 +22,13 @@ public:
 	void gotMessage(ofMessage msg) override;
 
 private:
-	float p1PaddleYPosition;
-	float p2PaddleYPosition;
+	bool startRally{true};
+	bool p1Serves{ofRandom(0, 100) > 50};
+	bool p1UpPress, p1DownPress, p2UpPress, p2DownPress;
 
-	float ballXPosition;
-	float ballYPosition;
+	float ballXPosition, ballYPosition;
+	float ballXSpeed, ballYSpeed;
 
-	float ballXSpeed;
-	float ballYSpeed;
-
-	int playerOneScore;
-	int playerTwoScore;
-
-	bool startRally = true;
-	bool playerOneServes;
-	bool playerOneUpPress, playerOneDownPress, playerTwoUpPress, playerTwoDownPress;
+	float p1YPosition, p2YPosition;
+	int p1Score, p2Score;
 };
