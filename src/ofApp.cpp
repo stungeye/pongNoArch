@@ -16,10 +16,7 @@ void ofApp::update() {
 		startRally = false;
 
 		ballXPosition = ofGetWidth() / 2.0f;
-		ballYPosition = ofGetHeight() / 2.0f;
-
-		p1YPosition = ofGetHeight() / 2.0f;
-		p2YPosition = ofGetHeight() / 2.0f;
+		ballYPosition = p2YPosition = p1YPosition = ofGetHeight() / 2.0f;
 
 		std::vector<float> startSpeeds{-120.0f, -110.f, -100.0f, 100.0f, 110.0f, 120.0f};
 		ofRandomize(startSpeeds);
