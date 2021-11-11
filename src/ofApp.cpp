@@ -94,53 +94,6 @@ void ofApp::update() {
 		startRally = true;
 		p1Serves = true;
 	}
-
-	// BALL EDGE BOUNCE
-	if (ballYPosition <= 5 || ballYPosition >= 495) {
-		ballYSpeed *= -1;
-		ballYPosition = ofClamp(ballYPosition, 5, 495);
-	}
-
-	// PLAYER ONE BALL PADDLE BOUNCE
-	if ((ballXPosition > 50 && ballXPosition < 65)
-		&& (ballYPosition > p1YPosition - 50)
-		&& (ballYPosition < p1YPosition + 50)) {
-		// Reverse the X speed direction.
-		ballXSpeed *= -1;
-		// Increase / Decrease Y speed depending on where we hit on paddle.
-		ballYSpeed += ballYPosition - p1YPosition;
-		// Push ball away from paddle on hit to the right.
-		ballXPosition = 65;
-	}
-
-	// PLAYER TWO BALL PADDLE BOUNCE
-	if ((ballXPosition > 735 && ballXPosition < 750)
-		&& (ballYPosition > p2YPosition - 50)
-		&& (ballYPosition < p2YPosition + 50)) {
-		// Reverse the X speed direction.
-		ballXSpeed *= -1;
-		// Increase / Decrease Y speed depending on where we hit on paddle.
-		ballYSpeed += ballYPosition - p2YPosition;
-		// Push ball away from paddle on hit to the left.
-		ballXPosition = 735;
-	}
-
-	// MOVE BALL
-	ballXPosition += ballXSpeed * ofGetLastFrameTime();
-	ballYPosition += ballYSpeed * ofGetLastFrameTime();
-
-	// CHECK FOR WIN
-	if (ballXPosition < 0) {
-		++p2Score;
-		startRally = true;
-		p1Serves = false;
-	}
-
-	if (ballXPosition > 800) {
-		++p1Score;
-		startRally = true;
-		p1Serves = true;
-	}
 }
 
 //--------------------------------------------------------------
