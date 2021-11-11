@@ -15,11 +15,13 @@ void ofApp::update() {
 	// RALLY RESTART
 	if (startRally) {
 		startRally = false;
-
+        
 		ballXPosition = ofGetWidth() / 2.0f;
-		ballYPosition = p2YPosition = p1YPosition = ofGetHeight() / 2.0f;
-		p1Paddle.warpTo({50, ofGetHeight() / 2.0f});
-		p2Paddle.warpTo({750, ofGetHeight() / 2.0f});
+
+		const float verticalMiddle = ofGetHeight() / 2.0f;
+		ballYPosition = verticalMiddle;
+		p1Paddle.warpTo({50, verticalMiddle});
+		p2Paddle.warpTo({750, verticalMiddle});
 
 		std::vector<float> startSpeeds{-120.0f, -110.f, -100.0f, 100.0f, 110.0f, 120.0f};
 		ofRandomize(startSpeeds);
@@ -30,14 +32,6 @@ void ofApp::update() {
 
 	// MOVE PADDLES
 	const double speedChange{300 * ofGetLastFrameTime()};
-
-	if (p1UpPress) p1YPosition -= speedChange;
-	if (p1DownPress) p1YPosition += speedChange;
-	if (p2UpPress) p2YPosition -= speedChange;
-	if (p2DownPress) p2YPosition += speedChange;
-
-	p1YPosition = ofClamp(p1YPosition, 50, 450);
-	p2YPosition = ofClamp(p2YPosition, 50, 450);
 
 	if (p1UpPress) p1Paddle.moveBy({0, -speedChange});
 	if (p1DownPress)p1Paddle.moveBy({0, speedChange});
@@ -56,24 +50,24 @@ void ofApp::update() {
 
 	// PLAYER ONE BALL PADDLE BOUNCE
 	if ((ballXPosition > 50 && ballXPosition < 65)
-		&& (ballYPosition > p1YPosition - 50)
-		&& (ballYPosition < p1YPosition + 50)) {
+		&& (ballYPosition > p1Paddle.position.y - 50)
+		&& (ballYPosition < p1Paddle.position.y + 50)) {
 		// Reverse the X speed direction.
 		ballXSpeed *= -1;
 		// Increase / Decrease Y speed depending on where we hit on paddle.
-		ballYSpeed += ballYPosition - p1YPosition;
+		ballYSpeed += ballYPosition - p1Paddle.position.y;
 		// Push ball away from paddle on hit to the right.
 		ballXPosition = 65;
 	}
 
 	// PLAYER TWO BALL PADDLE BOUNCE
 	if ((ballXPosition > 735 && ballXPosition < 750)
-		&& (ballYPosition > p2YPosition - 50)
-		&& (ballYPosition < p2YPosition + 50)) {
+		&& (ballYPosition > p2Paddle.position.y - 50)
+		&& (ballYPosition < p2Paddle.position.y + 50)) {
 		// Reverse the X speed direction.
 		ballXSpeed *= -1;
 		// Increase / Decrease Y speed depending on where we hit on paddle.
-		ballYSpeed += ballYPosition - p2YPosition;
+		ballYSpeed += ballYPosition - p2Paddle.position.y;
 		// Push ball away from paddle on hit to the left.
 		ballXPosition = 735;
 	}

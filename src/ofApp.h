@@ -4,10 +4,11 @@
 
 class Sprite {
 protected:
-	glm::vec2 position;
 	float width;
 	float height;
 public:
+	glm::vec2 position;
+
 	Sprite(float xPosition, float yPosition, float width, float height)
 		: position{xPosition, yPosition}, width{width}, height{height} {
 	}
@@ -76,7 +77,6 @@ private:
 	float ballXPosition, ballYPosition;
 	float ballXSpeed, ballYSpeed;
 
-	float p1YPosition, p2YPosition;
 	Paddle p1Paddle{0, 0, 20, 100, Paddle::Side::left};
 	Paddle p2Paddle{0, 0, 20, 100, Paddle::Side::right};
 	int p1Score, p2Score;
