@@ -2,6 +2,53 @@
 
 #include "ofMain.h"
 
+class Sprite {
+protected:
+	glm::vec2 position;
+	float width;
+	float height;
+public:
+	Sprite(float xPosition, float yPosition, float width, float height)
+		: position{xPosition, yPosition}, width{width}, height{height} {
+	}
+
+	void warpTo(glm::vec2 destination) {
+		position = destination;
+	}
+
+	void moveBy(glm::vec2 delta) {
+		position += delta;
+	}
+
+	void clampToBoundary(glm::vec2 min, glm::vec2 max) {
+		position.x = ofClamp(position.x, min.x + width / 2, max.x - width / 2);
+		position.y = ofClamp(position.y, min.y + height / 2, max.y - height / 2);
+	}
+
+	void draw() {
+		ofDrawRectangle(position.x, position.y, width, height);
+	}
+};
+
+class Paddle : public Sprite {
+public:
+	enum class Side { left, right };
+
+	Paddle(float xPosition, float yPosition, float width, float height, Side side)
+		: Sprite{xPosition, yPosition, width, height}, side{side} {
+	}
+
+private:
+	Side side;
+};
+
+class Ball : public Sprite {
+	Ball(float xPosition, float yPosition, float width, float height)
+		: Sprite{xPosition, yPosition, width, height} {
+	}
+
+};
+
 class ofApp : public ofBaseApp {
 
 public:
@@ -30,5 +77,7 @@ private:
 	float ballXSpeed, ballYSpeed;
 
 	float p1YPosition, p2YPosition;
+	Paddle p1Paddle{0, 0, 20, 100, Paddle::Side::left};
+	Paddle p2Paddle{0, 0, 20, 100, Paddle::Side::right};
 	int p1Score, p2Score;
 };
