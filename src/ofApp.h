@@ -10,7 +10,7 @@ public:
 	glm::vec2 position;
 
 	Sprite(float xPosition, float yPosition, float width, float height)
-		: position{xPosition, yPosition}, width{width}, height{height} {
+		: width{width}, height{height}, position{xPosition, yPosition} {
 	}
 
 	void warpTo(glm::vec2 destination) {
@@ -43,9 +43,20 @@ private:
 	Side side;
 };
 
-class Ball : public Sprite {
-	Ball(float xPosition, float yPosition, float width, float height)
-		: Sprite{xPosition, yPosition, width, height} {
+class MotionSprite : public Sprite {
+public:
+	glm::vec2 velocity;
+
+	MotionSprite(float xPosition, float yPosition, float width, float height, float xSpeed, float ySpeed)
+		: Sprite{xPosition, yPosition, width, height}, velocity{xSpeed, ySpeed} {
+	}
+
+	void cruiseAt(glm::vec2 newVelocity) {
+		velocity = newVelocity;
+	}
+
+	void accelerate(glm::vec2 impulse) {
+		velocity += impulse;
 	}
 
 };
@@ -77,7 +88,8 @@ private:
 	float ballXPosition, ballYPosition;
 	float ballXSpeed, ballYSpeed;
 
-	Paddle p1Paddle{0, 0, 20, 100, Paddle::Side::left};
-	Paddle p2Paddle{0, 0, 20, 100, Paddle::Side::right};
+	Sprite p1Paddle{0, 0, 20, 100};
+	Sprite p2Paddle{0, 0, 20, 100};
+	MotionSprite ball{0, 0, 20, 20, 0, 0};
 	int p1Score, p2Score;
 };

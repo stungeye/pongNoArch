@@ -15,11 +15,12 @@ void ofApp::update() {
 	// RALLY RESTART
 	if (startRally) {
 		startRally = false;
-        
-		ballXPosition = ofGetWidth() / 2.0f;
 
+		ballXPosition = ofGetWidth() / 2.0f;
+		const float horizontalMiddle = ofGetWidth() / 2.0f;
 		const float verticalMiddle = ofGetHeight() / 2.0f;
 		ballYPosition = verticalMiddle;
+		ball.warpTo({horizontalMiddle, verticalMiddle});
 		p1Paddle.warpTo({50, verticalMiddle});
 		p2Paddle.warpTo({750, verticalMiddle});
 
@@ -28,6 +29,7 @@ void ofApp::update() {
 
 		ballYSpeed = startSpeeds[0];
 		ballXSpeed = p1Serves ? 300 : -300;
+		ball.cruiseAt({startSpeeds[0], p1Serves ? 300 : -300});
 	}
 
 	// MOVE PADDLES
