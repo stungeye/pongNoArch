@@ -23,26 +23,19 @@ void ofApp::update() {
 		p1Paddle.warpTo({50, verticalMiddle});
 		p2Paddle.warpTo({750, verticalMiddle});
 
-		std::vector<float> startSpeeds{-120.0f, -110.f, -100.0f, 100.0f, 110.0f, 120.0f};
 		ofRandomize(startSpeeds);
+		std::cout << startSpeeds[0] << "\n";
 		ball.cruiseAt({p1Serves ? 300 : -300, startSpeeds[0]});
 	}
 
 	// MOVE PADDLES
-	const double speedChange{300 * ofGetLastFrameTime()};
-
-	if (p1UpPress) p1Paddle.moveBy({0, -speedChange});
-	if (p1DownPress)p1Paddle.moveBy({0, speedChange});
-	if (p2UpPress) p2Paddle.moveBy({0, -speedChange});
-	if (p2DownPress)p2Paddle.moveBy({0, speedChange});
-
+	p1Paddle.move(ofGetLastFrameTime());
+	p2Paddle.move(ofGetLastFrameTime());
 	p1Paddle.clampToBoundary({0, 0}, {ofGetWidth(), ofGetHeight()});
 	p2Paddle.clampToBoundary({0, 0}, {ofGetWidth(), ofGetHeight()});
 
-
 	// BALL EDGE BOUNCE
 	ball.bounceEdge(5, 495);
-
 
 	// PADDLE BOUNCE
 	ball.bouncePaddle(p1Paddle);
@@ -70,29 +63,24 @@ void ofApp::draw() {
 	ofDrawBitmapString("P1: " + std::to_string(p1Score), 200, 40);
 	ofDrawBitmapString("P2: " + std::to_string(p2Score), 550, 40);
 
-	//	ofDrawRectangle(50, p1YPosition, 20, 100);
-	//	ofDrawRectangle(750, p2YPosition, 20, 100);
 	p1Paddle.draw();
 	p2Paddle.draw();
 	ball.draw();
-
-	//	ofDrawRectangle(ballXPosition, ballYPosition, 20, 20);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	if (key == 'w') p1UpPress = true;
-	if (key == 's') p1DownPress = true;
-	if (key == 'i') p2UpPress = true;
-	if (key == 'k') p2DownPress = true;
+	if (key == 'w') p1Paddle.cruiseAt({0, -300});
+	if (key == 's') p1Paddle.cruiseAt({0, 300});
+	if (key == 'i') p2Paddle.cruiseAt({0, -300});
+	if (key == 'k') p2Paddle.cruiseAt({0, 300});
+
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-	if (key == 'w') p1UpPress = false;
-	if (key == 's') p1DownPress = false;
-	if (key == 'i') p2UpPress = false;
-	if (key == 'k') p2DownPress = false;
+	if (key == 'w' || key == 's') p1Paddle.cruiseAt({0, 0});
+	if (key == 'i' || key == 'k') p2Paddle.cruiseAt({0, 0});
 }
 
 //--------------------------------------------------------------

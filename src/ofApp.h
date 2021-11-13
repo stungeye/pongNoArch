@@ -17,10 +17,6 @@ public:
 		position = destination;
 	}
 
-	void moveBy(glm::vec2 delta) {
-		position += delta;
-	}
-
 	void clampToBoundary(glm::vec2 min, glm::vec2 max) {
 		position.x = ofClamp(position.x, min.x + width / 2, max.x - width / 2);
 		position.y = ofClamp(position.y, min.y + height / 2, max.y - height / 2);
@@ -117,8 +113,10 @@ private:
 	bool p1Serves{ofRandom(0, 100) > 50};
 	bool p1UpPress, p1DownPress, p2UpPress, p2DownPress;
 
-	Sprite p1Paddle{0, 0, 20, 100};
-	Sprite p2Paddle{0, 0, 20, 100};
+	MotionSprite p1Paddle{0, 0, 20, 100, 0, 0};
+	MotionSprite p2Paddle{0, 0, 20, 100, 0, 0};
 	MotionSprite ball{0, 0, 20, 20, 0, 0};
 	int p1Score, p2Score;
+
+	std::vector<float> startSpeeds{-105.0f, -70.f, -35.0f, 35.0f, 70.0f, 105.0f};
 };
