@@ -4,9 +4,9 @@
 
 class Sprite {
 protected:
+public:
 	float width;
 	float height;
-public:
 	glm::vec2 position;
 
 	Sprite(float xPosition, float yPosition, float width, float height)
@@ -59,6 +59,38 @@ public:
 		velocity += impulse;
 	}
 
+	void bounceEdge(float ceilingY, float floorY) {
+		if (position.y <= ceilingY || position.y >= floorY) {
+			velocity.y *= -1;
+			position.y = ofClamp(position.y, ceilingY, floorY);
+		}
+	}
+
+	void bouncePaddle(Sprite paddle) {
+		float dy = position.y - paddle.position.y;
+
+		if (std::abs(dy) < paddle.height / 2) {
+			float hitWidth = 0.5 * (width + paddle.width);
+			float dx = paddle.position.x - position.x;
+
+			if (std::abs(dx) < hitWidth) {
+				// Reverse the X speed direction.
+				velocity.x *= -1;
+
+				// Increase / Decrease Y speed depending on where we hit on paddle.
+				velocity.y += position.y - paddle.position.y;
+
+				// Push ball away from paddle by the hit width.
+				float direction = dx / std::abs(dx); // Convert to either +1 or -1
+				position.x = paddle.position.x - (hitWidth * direction);
+			}
+		}
+	}
+
+	void move(float deltaTime) {
+		position += velocity * deltaTime;
+	}
+
 };
 
 class ofApp : public ofBaseApp {
@@ -84,9 +116,6 @@ private:
 	bool startRally{true};
 	bool p1Serves{ofRandom(0, 100) > 50};
 	bool p1UpPress, p1DownPress, p2UpPress, p2DownPress;
-
-	float ballXPosition, ballYPosition;
-	float ballXSpeed, ballYSpeed;
 
 	Sprite p1Paddle{0, 0, 20, 100};
 	Sprite p2Paddle{0, 0, 20, 100};

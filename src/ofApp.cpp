@@ -16,20 +16,16 @@ void ofApp::update() {
 	if (startRally) {
 		startRally = false;
 
-		ballXPosition = ofGetWidth() / 2.0f;
 		const float horizontalMiddle = ofGetWidth() / 2.0f;
 		const float verticalMiddle = ofGetHeight() / 2.0f;
-		ballYPosition = verticalMiddle;
+
 		ball.warpTo({horizontalMiddle, verticalMiddle});
 		p1Paddle.warpTo({50, verticalMiddle});
 		p2Paddle.warpTo({750, verticalMiddle});
 
 		std::vector<float> startSpeeds{-120.0f, -110.f, -100.0f, 100.0f, 110.0f, 120.0f};
 		ofRandomize(startSpeeds);
-
-		ballYSpeed = startSpeeds[0];
-		ballXSpeed = p1Serves ? 300 : -300;
-		ball.cruiseAt({startSpeeds[0], p1Serves ? 300 : -300});
+		ball.cruiseAt({p1Serves ? 300 : -300, startSpeeds[0]});
 	}
 
 	// MOVE PADDLES
@@ -45,47 +41,24 @@ void ofApp::update() {
 
 
 	// BALL EDGE BOUNCE
-	if (ballYPosition <= 5 || ballYPosition >= 495) {
-		ballYSpeed *= -1;
-		ballYPosition = ofClamp(ballYPosition, 5, 495);
-	}
+	ball.bounceEdge(5, 495);
 
-	// PLAYER ONE BALL PADDLE BOUNCE
-	if ((ballXPosition > 50 && ballXPosition < 65)
-		&& (ballYPosition > p1Paddle.position.y - 50)
-		&& (ballYPosition < p1Paddle.position.y + 50)) {
-		// Reverse the X speed direction.
-		ballXSpeed *= -1;
-		// Increase / Decrease Y speed depending on where we hit on paddle.
-		ballYSpeed += ballYPosition - p1Paddle.position.y;
-		// Push ball away from paddle on hit to the right.
-		ballXPosition = 65;
-	}
 
-	// PLAYER TWO BALL PADDLE BOUNCE
-	if ((ballXPosition > 735 && ballXPosition < 750)
-		&& (ballYPosition > p2Paddle.position.y - 50)
-		&& (ballYPosition < p2Paddle.position.y + 50)) {
-		// Reverse the X speed direction.
-		ballXSpeed *= -1;
-		// Increase / Decrease Y speed depending on where we hit on paddle.
-		ballYSpeed += ballYPosition - p2Paddle.position.y;
-		// Push ball away from paddle on hit to the left.
-		ballXPosition = 735;
-	}
+	// PADDLE BOUNCE
+	ball.bouncePaddle(p1Paddle);
+	ball.bouncePaddle(p2Paddle);
 
 	// MOVE BALL
-	ballXPosition += ballXSpeed * ofGetLastFrameTime();
-	ballYPosition += ballYSpeed * ofGetLastFrameTime();
+	ball.move(ofGetLastFrameTime());
 
 	// CHECK FOR WIN
-	if (ballXPosition < 0) {
+	if (ball.position.x < 0) {
 		++p2Score;
 		startRally = true;
 		p1Serves = false;
 	}
 
-	if (ballXPosition > 800) {
+	if (ball.position.x > 800) {
 		++p1Score;
 		startRally = true;
 		p1Serves = true;
@@ -101,8 +74,9 @@ void ofApp::draw() {
 	//	ofDrawRectangle(750, p2YPosition, 20, 100);
 	p1Paddle.draw();
 	p2Paddle.draw();
+	ball.draw();
 
-	ofDrawRectangle(ballXPosition, ballYPosition, 20, 20);
+	//	ofDrawRectangle(ballXPosition, ballYPosition, 20, 20);
 }
 
 //--------------------------------------------------------------
