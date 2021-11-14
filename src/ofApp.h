@@ -61,7 +61,6 @@ public:
 
 			// Has the ball cross over a paddle edge?
 			if (std::abs(dx) < hitDistanceX) {
-				std::cout << position << "\n";
 				// Reverse the X speed direction.
 				velocity.x *= -1;
 
@@ -71,7 +70,6 @@ public:
 				// Push ball away from paddle by the hit width.
 				float direction = dx / std::abs(dx); // Convert to either +1 or -1
 				position.x = paddle.position.x - (hitDistanceX * direction);
-				std::cout << position << "\n";
 			}
 		}
 	}
@@ -83,30 +81,71 @@ public:
 };
 
 class PongGame {
+public:
 	enum class Player { p1, p2 };
 
-	PongGame(float paddleWidth, float paddleHeight, float canvasWidth, float canvasHeight)
-		: canvasWidth{canvasWidth}, canvasHeight{canvasHeight} {
+	PongGame(float paddleWidth, float paddleHeight, float ballWidth, float ballHeight, float canvasWidth, float canvasHeight)
+		: canvasWidth{canvasWidth}, canvasHeight{canvasHeight}, p1Paddle{0, 0, paddleWidth, paddleHeight, 0, 0} , p2Paddle{0, 0, paddleWidth, paddleHeight, 0, 0} , ball{0, 0, ballWidth, ballHeight, 0, 0} {
 	}
 
-
 	void restartRally(Player servingPlayer) {
+		const float horizontalMiddle = canvasWidth / 2.0f;
+		const float verticalMiddle = canvasHeight / 2.0f;
 
+		ball.warpTo({horizontalMiddle, verticalMiddle});
+		p1Paddle.warpTo({50, verticalMiddle});
+		p2Paddle.warpTo({750, verticalMiddle});
+
+		ofRandomize(startSpeeds);
+		const float xSpeed = servingPlayer == Player::p1 ? 300 : -300;
+		const float ySpeed = startSpeeds[0];
+		ball.cruiseAt({xSpeed, ySpeed});
 	}
 
 	void update(float deltaTime) {
+        // MOVE PADDLES
+        p1Paddle.move(deltaTime);
+        p2Paddle.move(deltaTime);
+        p1Paddle.clampToBoundary({0, 0}, {canvasWidth, canvasHeight});
+        p2Paddle.clampToBoundary({0, 0}, {canvasWidth, canvasHeight});
 
+        // BALL EDGE BOUNCE
+        ball.bounceEdge(5, 495);
+
+        // PADDLE BOUNCE
+        ball.bouncePaddle(p1Paddle);
+        ball.bouncePaddle(p2Paddle);
+
+        // MOVE BALL
+        ball.move(deltaTime);
+
+        // CHECK FOR WIN
+        if (ball.position.x < 0) {
+            ++p2Score;
+			restartRally(Player::p2);
+        }
+
+        if (ball.position.x > 800) {
+            ++p1Score;
+			restartRally(Player::p1);
+        }
+	}
+
+	void draw() {
+        ofDrawBitmapString("P1: " + std::to_string(p1Score), 200, 40);
+        ofDrawBitmapString("P2: " + std::to_string(p2Score), 550, 40);
+
+        p1Paddle.draw();
+        p2Paddle.draw();
+        ball.draw();
 	}
 
 private:
 	float canvasWidth, canvasHeight;
 
-	bool startRally{true};
 	bool p1Serves{ofRandom(0, 100) > 50};
 
-	MotionSprite p1Paddle{0, 0, 20, 100, 0, 0};
-	MotionSprite p2Paddle{0, 0, 20, 100, 0, 0};
-	MotionSprite ball{0, 0, 20, 20, 0, 0};
+	MotionSprite p1Paddle, p2Paddle, ball;
 	int p1Score, p2Score;
 
 	std::vector<float> startSpeeds{-105.0f, -70.f, -35.0f, 35.0f, 70.0f, 105.0f};
@@ -132,13 +171,6 @@ public:
 	void gotMessage(ofMessage msg) override;
 
 private:
-	bool startRally{true};
-	bool p1Serves{ofRandom(0, 100) > 50};
-
-	MotionSprite p1Paddle{0, 0, 20, 100, 0, 0};
-	MotionSprite p2Paddle{0, 0, 20, 100, 0, 0};
-	MotionSprite ball{0, 0, 20, 20, 0, 0};
-	int p1Score, p2Score;
-
-	std::vector<float> startSpeeds{-105.0f, -70.f, -35.0f, 35.0f, 70.0f, 105.0f};
+	const static int canvasWidth{ 800 }, canvasHeight{ 500 };
+	PongGame game{ 20, 100, 20, 20, canvasWidth, canvasHeight };
 };
