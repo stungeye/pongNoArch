@@ -43,7 +43,7 @@ void ofApp::update() {
 	}
 
 	// PLAYER ONE BALL PADDLE BOUNCE
-	if ((ballXPosition > 50 && ballXPosition < 65)
+	if ((ballXPosition > 50 && ballXPosition < 70)
 		&& (ballYPosition > p1YPosition - 50)
 		&& (ballYPosition < p1YPosition + 50)) {
 		// Reverse the X speed direction.
@@ -51,11 +51,11 @@ void ofApp::update() {
 		// Increase / Decrease Y speed depending on where we hit on paddle.
 		ballYSpeed += ballYPosition - p1YPosition;
 		// Push ball away from paddle on hit to the right.
-		ballXPosition = 65;
+		ballXPosition = 70;
 	}
 
 	// PLAYER TWO BALL PADDLE BOUNCE
-	if ((ballXPosition > 735 && ballXPosition < 750)
+	if ((ballXPosition > 730 && ballXPosition < 750)
 		&& (ballYPosition > p2YPosition - 50)
 		&& (ballYPosition < p2YPosition + 50)) {
 		// Reverse the X speed direction.
@@ -63,7 +63,7 @@ void ofApp::update() {
 		// Increase / Decrease Y speed depending on where we hit on paddle.
 		ballYSpeed += ballYPosition - p2YPosition;
 		// Push ball away from paddle on hit to the left.
-		ballXPosition = 735;
+		ballXPosition = 730;
 	}
 
 	// MOVE BALL
@@ -86,13 +86,16 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+	// DRAW SCORES
 	ofDrawBitmapString("P1: " + std::to_string(p1Score), 200, 40);
 	ofDrawBitmapString("P2: " + std::to_string(p2Score), 550, 40);
 
+	// DRAW PADDLES
 	ofDrawRectangle(50, p1YPosition, 20, 100);
 	ofDrawRectangle(750, p2YPosition, 20, 100);
 
-	ofDrawCircle(ballXPosition, ballYPosition, 10);
+	// DRAW BALL
+	ofDrawRectangle(ballXPosition, ballYPosition, 20, 20);
 }
 
 //--------------------------------------------------------------
