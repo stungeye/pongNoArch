@@ -27,18 +27,6 @@ public:
 	}
 };
 
-class Paddle : public Sprite {
-public:
-	enum class Side { left, right };
-
-	Paddle(float xPosition, float yPosition, float width, float height, Side side)
-		: Sprite{xPosition, yPosition, width, height}, side{side} {
-	}
-
-private:
-	Side side;
-};
-
 class MotionSprite : public Sprite {
 public:
 	glm::vec2 velocity;
@@ -65,11 +53,14 @@ public:
 	void bouncePaddle(Sprite paddle) {
 		float dy = position.y - paddle.position.y;
 
+		// Is the ball inline with the paddle vertically?
 		if (std::abs(dy) < paddle.height / 2) {
 			float hitWidth = 0.5 * (width + paddle.width);
 			float dx = paddle.position.x - position.x;
 
+			// Has the ball cross over a paddle edge?
 			if (std::abs(dx) < hitWidth) {
+				std::cout << position << "\n";
 				// Reverse the X speed direction.
 				velocity.x *= -1;
 
@@ -79,6 +70,7 @@ public:
 				// Push ball away from paddle by the hit width.
 				float direction = dx / std::abs(dx); // Convert to either +1 or -1
 				position.x = paddle.position.x - (hitWidth * direction);
+				std::cout << position << "\n";
 			}
 		}
 	}
