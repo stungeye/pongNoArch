@@ -40,6 +40,12 @@
     <ClCompile Include="src\PongGame.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Sprite.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MotionSprite.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -96,6 +102,12 @@
       <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
     <ClInclude Include="src\PongGame.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sprite.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MotionSprite.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

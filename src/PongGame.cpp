@@ -1,22 +1,22 @@
 #include "PongGame.h"
 #include "ofUtils.h"
 
-void PongGame::restartRally(Player servingPlayer) {
-    const float horizontalMiddle = canvasWidth / 2.0f;
-    const float verticalMiddle = canvasHeight / 2.0f;
+void PongGame::restartRally(const Player servingPlayer) {
+    const auto horizontalMiddle{canvasWidth / 2.0f};
+    const auto verticalMiddle{canvasHeight / 2.0f};
     ball.warpTo({horizontalMiddle, verticalMiddle});
 
-    const float paddleEdgeBuffer = 50;
+    const auto paddleEdgeBuffer{50.0f};
     p1Paddle.warpTo({paddleEdgeBuffer, verticalMiddle});
     p2Paddle.warpTo({canvasWidth - paddleEdgeBuffer, verticalMiddle});
 
     ofRandomize(startYSpeeds);
-    const float xSpeed = servingPlayer == Player::p1 ? gameSpeed : -gameSpeed;
-    const float ySpeed = startYSpeeds[0];
+    const auto xSpeed = servingPlayer == Player::p1 ? gameSpeed : -gameSpeed;
+    const auto ySpeed = startYSpeeds[0];
     ball.cruiseAt({xSpeed, ySpeed});
 }
 
-void PongGame::update(float deltaTime) {
+void PongGame::update(const float deltaTime) {
     // MOVE PADDLES
     p1Paddle.move(deltaTime);
     p2Paddle.move(deltaTime);
@@ -45,8 +45,8 @@ void PongGame::update(float deltaTime) {
     }
 }
 
-void PongGame::draw() {
-    const float scoreFromEdge = 200;
+void PongGame::draw() const {
+    const auto scoreFromEdge{200};
     ofDrawBitmapString("P1: " + std::to_string(p1Score), scoreFromEdge, 40);
     ofDrawBitmapString("P2: " + std::to_string(p2Score), canvasWidth - scoreFromEdge - 50, 40);
 
