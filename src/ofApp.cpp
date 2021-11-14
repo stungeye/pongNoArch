@@ -12,12 +12,17 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
+
+	const float canvasWidth = ofGetWidth();
+	const float canvasHeight = ofGetHeight();
+	const float deltaTime = ofGetLastFrameTime();
+
 	// RALLY RESTART
 	if (startRally) {
 		startRally = false;
 
-		const float horizontalMiddle = ofGetWidth() / 2.0f;
-		const float verticalMiddle = ofGetHeight() / 2.0f;
+		const float horizontalMiddle = canvasWidth / 2.0f;
+		const float verticalMiddle = canvasHeight / 2.0f;
 
 		ball.warpTo({horizontalMiddle, verticalMiddle});
 		p1Paddle.warpTo({50, verticalMiddle});
@@ -29,10 +34,10 @@ void ofApp::update() {
 	}
 
 	// MOVE PADDLES
-	p1Paddle.move(ofGetLastFrameTime());
-	p2Paddle.move(ofGetLastFrameTime());
-	p1Paddle.clampToBoundary({0, 0}, {ofGetWidth(), ofGetHeight()});
-	p2Paddle.clampToBoundary({0, 0}, {ofGetWidth(), ofGetHeight()});
+	p1Paddle.move(deltaTime);
+	p2Paddle.move(deltaTime);
+	p1Paddle.clampToBoundary({0, 0}, {canvasWidth, canvasHeight});
+	p2Paddle.clampToBoundary({0, 0}, {canvasWidth, canvasHeight});
 
 	// BALL EDGE BOUNCE
 	ball.bounceEdge(5, 495);
@@ -42,7 +47,7 @@ void ofApp::update() {
 	ball.bouncePaddle(p2Paddle);
 
 	// MOVE BALL
-	ball.move(ofGetLastFrameTime());
+	ball.move(deltaTime);
 
 	// CHECK FOR WIN
 	if (ball.position.x < 0) {
@@ -115,7 +120,9 @@ void ofApp::mouseExited(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
-
+	if ((w != 800) || (h != 500)) {
+		ofSetWindowShape(800, 500);
+	}
 }
 
 //--------------------------------------------------------------

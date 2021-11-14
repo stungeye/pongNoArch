@@ -52,14 +52,15 @@ public:
 
 	void bouncePaddle(Sprite paddle) {
 		float dy = position.y - paddle.position.y;
+		float hitDistanceY = 0.5 * (height + paddle.height);
 
 		// Is the ball inline with the paddle vertically?
-		if (std::abs(dy) < paddle.height / 2) {
-			float hitWidth = 0.5 * (width + paddle.width);
+		if (std::abs(dy) < hitDistanceY) {
+			float hitDistanceX = 0.5 * (width + paddle.width);
 			float dx = paddle.position.x - position.x;
 
 			// Has the ball cross over a paddle edge?
-			if (std::abs(dx) < hitWidth) {
+			if (std::abs(dx) < hitDistanceX) {
 				std::cout << position << "\n";
 				// Reverse the X speed direction.
 				velocity.x *= -1;
@@ -69,7 +70,7 @@ public:
 
 				// Push ball away from paddle by the hit width.
 				float direction = dx / std::abs(dx); // Convert to either +1 or -1
-				position.x = paddle.position.x - (hitWidth * direction);
+				position.x = paddle.position.x - (hitDistanceX * direction);
 				std::cout << position << "\n";
 			}
 		}
@@ -79,6 +80,36 @@ public:
 		position += velocity * deltaTime;
 	}
 
+};
+
+class PongGame {
+	enum class Player { p1, p2 };
+
+	PongGame(float paddleWidth, float paddleHeight, float canvasWidth, float canvasHeight)
+		: canvasWidth{canvasWidth}, canvasHeight{canvasHeight} {
+	}
+
+
+	void restartRally(Player servingPlayer) {
+
+	}
+
+	void update(float deltaTime) {
+
+	}
+
+private:
+	float canvasWidth, canvasHeight;
+
+	bool startRally{true};
+	bool p1Serves{ofRandom(0, 100) > 50};
+
+	MotionSprite p1Paddle{0, 0, 20, 100, 0, 0};
+	MotionSprite p2Paddle{0, 0, 20, 100, 0, 0};
+	MotionSprite ball{0, 0, 20, 20, 0, 0};
+	int p1Score, p2Score;
+
+	std::vector<float> startSpeeds{-105.0f, -70.f, -35.0f, 35.0f, 70.0f, 105.0f};
 };
 
 class ofApp : public ofBaseApp {
@@ -103,7 +134,6 @@ public:
 private:
 	bool startRally{true};
 	bool p1Serves{ofRandom(0, 100) > 50};
-	bool p1UpPress, p1DownPress, p2UpPress, p2DownPress;
 
 	MotionSprite p1Paddle{0, 0, 20, 100, 0, 0};
 	MotionSprite p2Paddle{0, 0, 20, 100, 0, 0};
