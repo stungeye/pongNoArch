@@ -1,15 +1,14 @@
 #include "ofApp.h"
-#include <vector>
-
 
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofSetFrameRate(100);
-	ofSetWindowShape(800, 500);
+	ofSetWindowShape(canvasWidth, canvasHeight);
 	ofSetWindowPosition(1000, 500);
 	ofSetRectMode(OF_RECTMODE_CENTER);
 
-	game.restartRally(PongGame::Player::p1);
+	const auto startingServe = ofRandom(0, 100) < 50 ? PongGame::Player::p1 : PongGame::Player::p2;
+	game.restartRally(startingServe);
 }
 
 //--------------------------------------------------------------
@@ -24,19 +23,12 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-/*	if (key == 'w') p1Paddle.cruiseAt({0, -300});
-	if (key == 's') p1Paddle.cruiseAt({0, 300});
-	if (key == 'i') p2Paddle.cruiseAt({0, -300});
-	if (key == 'k') p2Paddle.cruiseAt({0, 300});
-*/
+	game.keyPressed(key);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-	/*
-	if (key == 'w' || key == 's') p1Paddle.cruiseAt({0, 0});
-	if (key == 'i' || key == 'k') p2Paddle.cruiseAt({0, 0});
-	*/
+	game.keyReleased(key);
 }
 
 //--------------------------------------------------------------
@@ -71,8 +63,8 @@ void ofApp::mouseExited(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
-	if ((w != 800) || (h != 500)) {
-		ofSetWindowShape(800, 500);
+	if ((w != canvasWidth) || (h != canvasHeight)) {
+		ofSetWindowShape(canvasWidth, canvasHeight);
 	}
 }
 

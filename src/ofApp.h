@@ -44,6 +44,11 @@ public:
 	}
 
 	void bounceEdge(float ceilingY, float floorY) {
+		// Adjust ceiling and floor for ball size.
+		ceilingY += height / 2.0f;
+		floorY -= height / 2.0f;
+
+		// Check and execute bounce.
 		if (position.y <= ceilingY || position.y >= floorY) {
 			velocity.y *= -1;
 			position.y = ofClamp(position.y, ceilingY, floorY);
@@ -84,21 +89,26 @@ class PongGame {
 public:
 	enum class Player { p1, p2 };
 
-	PongGame(float paddleWidth, float paddleHeight, float ballWidth, float ballHeight, float canvasWidth, float canvasHeight)
-		: canvasWidth{canvasWidth}, canvasHeight{canvasHeight}, p1Paddle{0, 0, paddleWidth, paddleHeight, 0, 0} , p2Paddle{0, 0, paddleWidth, paddleHeight, 0, 0} , ball{0, 0, ballWidth, ballHeight, 0, 0} {
+	PongGame(glm::vec2 paddleSize, glm::vec2 ballSize, glm::vec2 canvasSize, float gameSpeed)
+  		: gameSpeed{ gameSpeed },
+          canvasWidth{canvasSize.x}, canvasHeight{canvasSize.y},
+		  p1Paddle{0, 0, paddleSize.x, paddleSize.y, 0, 0},
+          p2Paddle{0, 0, paddleSize.x, paddleSize.y, 0, 0}, 
+          ball{0, 0, ballSize.x, ballSize.y, 0, 0} {
 	}
 
 	void restartRally(Player servingPlayer) {
 		const float horizontalMiddle = canvasWidth / 2.0f;
 		const float verticalMiddle = canvasHeight / 2.0f;
-
 		ball.warpTo({horizontalMiddle, verticalMiddle});
-		p1Paddle.warpTo({50, verticalMiddle});
-		p2Paddle.warpTo({750, verticalMiddle});
 
-		ofRandomize(startSpeeds);
-		const float xSpeed = servingPlayer == Player::p1 ? 300 : -300;
-		const float ySpeed = startSpeeds[0];
+		const float paddleEdgeBuffer = 50;
+		p1Paddle.warpTo({paddleEdgeBuffer, verticalMiddle});
+		p2Paddle.warpTo({canvasWidth - paddleEdgeBuffer, verticalMiddle});
+
+		ofRandomize(startYSpeeds);
+		const float xSpeed = servingPlayer == Player::p1 ? gameSpeed : -gameSpeed;
+		const float ySpeed = startYSpeeds[0];
 		ball.cruiseAt({xSpeed, ySpeed});
 	}
 
@@ -110,7 +120,7 @@ public:
         p2Paddle.clampToBoundary({0, 0}, {canvasWidth, canvasHeight});
 
         // BALL EDGE BOUNCE
-        ball.bounceEdge(5, 495);
+        ball.bounceEdge(0, canvasHeight);
 
         // PADDLE BOUNCE
         ball.bouncePaddle(p1Paddle);
@@ -125,30 +135,42 @@ public:
 			restartRally(Player::p2);
         }
 
-        if (ball.position.x > 800) {
+        if (ball.position.x > canvasWidth) {
             ++p1Score;
 			restartRally(Player::p1);
         }
 	}
 
 	void draw() {
-        ofDrawBitmapString("P1: " + std::to_string(p1Score), 200, 40);
-        ofDrawBitmapString("P2: " + std::to_string(p2Score), 550, 40);
+		const float scoreFromEdge = 200;
+        ofDrawBitmapString("P1: " + std::to_string(p1Score), scoreFromEdge, 40);
+        ofDrawBitmapString("P2: " + std::to_string(p2Score), canvasWidth - scoreFromEdge - 50, 40);
 
         p1Paddle.draw();
         p2Paddle.draw();
         ball.draw();
 	}
 
+	void keyPressed(int key) {
+        if (key == 'w') p1Paddle.cruiseAt({0, -gameSpeed});
+        if (key == 's') p1Paddle.cruiseAt({0, gameSpeed});
+        if (key == 'i') p2Paddle.cruiseAt({0, -gameSpeed});
+        if (key == 'k') p2Paddle.cruiseAt({0, gameSpeed});
+	}
+
+	void keyReleased(int key) {
+        if (key == 'w' || key == 's') p1Paddle.cruiseAt({0, 0});
+        if (key == 'i' || key == 'k') p2Paddle.cruiseAt({0, 0});
+	}
+
 private:
+	const 
+
+	float gameSpeed;
 	float canvasWidth, canvasHeight;
-
-	bool p1Serves{ofRandom(0, 100) > 50};
-
 	MotionSprite p1Paddle, p2Paddle, ball;
-	int p1Score, p2Score;
-
-	std::vector<float> startSpeeds{-105.0f, -70.f, -35.0f, 35.0f, 70.0f, 105.0f};
+	int p1Score{0}, p2Score{0};
+	std::vector<float> startYSpeeds{-105.0f, -70.f, -35.0f, 35.0f, 70.0f, 105.0f};
 };
 
 class ofApp : public ofBaseApp {
@@ -172,5 +194,5 @@ public:
 
 private:
 	const static int canvasWidth{ 800 }, canvasHeight{ 500 };
-	PongGame game{ 20, 100, 20, 20, canvasWidth, canvasHeight };
+	PongGame game{ {20, 100}, {20, 20}, {canvasWidth, canvasHeight}, 300 };
 };
