@@ -25,5 +25,5 @@ public:
 
 private:
 	const static int canvasWidth{ 800 }, canvasHeight{ 500 };
-	PongGame game{ {20, 100}, {20, 20}, {canvasWidth, canvasHeight}, 300 };
+	PongGame game{ {20, 100}, {20, 20}, {canvasWidth, canvasHeight}, 400 };
 };
